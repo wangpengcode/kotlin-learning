@@ -31,33 +31,37 @@ class BuilderPatternPeople(
 
 abstract class ApplyCardBuilder {
 	protected var creditCard: CreditCard = CreditCard()
-	abstract fun kyc()
-	abstract fun applyToCentralBank()
-	abstract fun makeCard()
-	abstract fun deliver()
+	abstract fun kyc(): ApplyCardBuilder
+	abstract fun applyToCentralBank(): ApplyCardBuilder
+	abstract fun makeCard(): ApplyCardBuilder
+	abstract fun deliver(): ApplyCardBuilder
 	abstract fun builder(): CreditCard
 }
 
 class AliBaBaCreditCardBuilder : ApplyCardBuilder() {
-	override fun kyc() {
+	override fun kyc(): ApplyCardBuilder {
 		this.creditCard.apply { kycPass = true }
+		return this
 	}
 	
-	override fun applyToCentralBank() {
+	override fun applyToCentralBank(): ApplyCardBuilder {
 		this.creditCard.apply { applyToCentralBank = true }
+		return this
 	}
 	
-	override fun makeCard() {
+	override fun makeCard(): ApplyCardBuilder {
 		this.creditCard.apply {
 			id = Random(10000).nextInt().toString()
 			holder = "holder"
 			balance = BigDecimal.ONE
 			issuer = "Alibaba"
 		}
+		return this
 	}
 	
-	override fun deliver() {
+	override fun deliver(): ApplyCardBuilder {
 		this.creditCard.apply { deliverd = true }
+		return this
 	}
 	
 	override fun builder(): CreditCard {

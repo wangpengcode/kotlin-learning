@@ -24,4 +24,11 @@ class BuilderPatternTest {
 		val card = issuer.deliverCard()
 		print("issuer alibaba deliver card: $card")
 	}
+	
+	@Test
+	fun deliverCard_detail() {
+		val issuer = Issuer(AliBaBaCreditCardBuilder().kyc().applyToCentralBank().makeCard().deliver())
+		val card = issuer.deliverCard()
+		print("issuer alibaba deliver card: $card")
+	}
 }
