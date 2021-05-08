@@ -17,4 +17,11 @@ class BuilderPatternTest {
 		}
 		println(people)
 	}
+	
+	@Test
+	fun deliverCard() {
+		val issuer = Issuer(AliBaBaCreditCardBuilder())
+		val card = issuer.deliverCard()
+		print("issuer alibaba deliver card: $card")
+	}
 }
