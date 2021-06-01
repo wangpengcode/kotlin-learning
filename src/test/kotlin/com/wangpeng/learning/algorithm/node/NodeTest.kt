@@ -8,6 +8,41 @@ import org.junit.jupiter.api.extension.ExtendWith
 class NodeTest {
 	data class Node(var data: Int = 0, var next: Node? = null)
 	
+	/**
+	 * 如何在只给定单链表中某个结点的指针 的情况下删除该结点
+	 * **/
+	@Test
+	fun removeByNode() {
+		val head = mockNode()
+		printNode(head)
+		val k = 5
+		println("开始删除指定 data = $k 的节点")
+		var needRemove: Node? = null
+		var cur = head.next
+		while (cur != null) {
+			if (cur.data == 5 ) {
+				needRemove = cur
+				break
+			}
+			cur = cur.next
+		}
+		if (needRemove == null) {
+			print("have no element need to be removed.")
+			return
+		}
+		removeNode(needRemove)
+		println("移除后")
+		printNode(head)
+	}
+	
+	private fun removeNode(needRemove: Node): Boolean {
+		if (needRemove.next == null) return false
+		needRemove.data = needRemove.next!!.data // 将下一个的数据赋值给当前结点
+		val tmp = needRemove.next
+		needRemove.next = tmp?.next // 将当前结点的nex 设置为下一个结点的next
+		return true
+	}
+	
 	/***
 	 * 链表找出链表中的倒数K个元素
 	 */
