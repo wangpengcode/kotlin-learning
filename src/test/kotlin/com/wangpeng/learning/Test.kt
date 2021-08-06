@@ -3,8 +3,8 @@ package com.wangpeng.learning
 import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import java.math.BigInteger
 import kotlin.math.absoluteValue
+import kotlin.math.max
 
 @ExtendWith(MockKExtension::class)
 class Test {
@@ -139,7 +139,7 @@ class Test {
 	
 	@Test
 	fun testsss() {
-		letterCombinations("23")
+		letterCombinations("23").forEach { print(it + ",") }
 	}
 	
 	fun letterCombinations(digits: String): List<String> {
@@ -153,35 +153,195 @@ class Test {
 		map["8"] = "tuv"
 		map["9"] = "wxyz"
 		println(digits)
-		var str = ""
-		for (i in digits.toCharArray()) {
-			println(i.toString())
-			str += map[i.toString()]
+		var result = mutableListOf<String>()
+		var originalRaw = mutableListOf<List<String>>()
+		val originalList = digits.toCharArray().map { it.toString() }.toList()
+		originalList.forEach {
+			map[it]?.let { it2 -> originalRaw.add(listOf(it2)) }
 		}
-		println(str)
-		val array = str.toCharArray()
-		var list = mutableListOf<String>()
-		list = find(array,list, StringBuffer(),0)
-		list.forEach{
-			print(it+",")
-		}
-		return list
+		
+		
+		return result
 	}
 	
 	/**
 	 * string 的所有字符串组合
 	 */
-	fun find(array: CharArray, list: MutableList<String>, buffer: java.lang.StringBuffer, start: Int): MutableList<String> {
+	fun find(array: CharArray, list: MutableList<String>, buffer: StringBuffer, start: Int): MutableList<String> {
 		var i = start
 		while (i < array.size) {
 			buffer.append(array[i])
 			if (i < array.size - 1) {
-				find(array,list,buffer,i+1)
+				find(array, list, buffer, i + 1)
 			}
 			list.add(buffer.toString())
-			buffer.setLength(buffer.length - 1 )
+			buffer.setLength(buffer.length - 1)
 			i ++
 		}
 		return list
 	}
+	
+	fun addBinary(a: String, b: String): String {
+		val buffer = StringBuffer()
+		var i = a.length - 1
+		var j = b.length - 1
+		var needAddOne = 0
+		while (i > 0 || j > 0) {
+			var sum: Int
+			val a1 = if (i >= 0) a[i] - '0' else 0
+			val b1 = if (i >= 0) b[i] - '0' else 0
+			sum = a1 + b1
+			buffer.append(sum % 2)
+			needAddOne = sum / 2
+			i --
+			j --
+		}
+		
+		if (needAddOne == 1) {
+			buffer.append(1)
+		}
+		return buffer.reverse().toString()
+	}
+	
+	fun maxProfit(prices: IntArray): Int {
+		var maxProfit = 0
+		var minPrice = Int.MAX_VALUE
+		for (i in prices) {
+			if (i < minPrice) {
+				minPrice = i
+			} else if (i - minPrice > maxProfit) {
+				maxProfit = i - minPrice
+			}
+		}
+		return maxProfit
+	}
+	
+	fun removeDuplicates(nums: IntArray): Int {
+		if (nums.isEmpty()) return 0
+		var p = 0
+		var q = 1
+		while (q < nums.size) {
+			if (nums[p] != nums[q]) {
+				nums[p + 1] = nums[q]
+				q ++
+			}
+			p ++
+		}
+		return p + 1
+	}
+	
+	@Test
+	fun testSearchInsert() {
+		val array = intArrayOf(1,3,5,6)
+		println(searchInsert(array,2))
+//		println(searchInsert(array,9))
+//		println(searchInsert(array,0))
+//		val array1 = intArrayOf(1,3)
+//		println(searchInsert(array1,2)) 解答失败: 测试用例:[1,3,5,6] 2 测试结果:2 期望结果:1 stdout:
+	}
+	
+	fun searchInsert(nums: IntArray, target: Int): Int {
+		if (nums[0] >= target) return 0
+		if (nums[nums.size - 1] == target) return nums.size - 1
+		if (nums[nums.size - 1] < target) return nums.size
+		var start = 0
+		var end = nums.size - 1
+		var mid = 0
+		var result = Int.MAX_VALUE
+		
+		while (start < end) {
+			mid = (start + end) / 2
+			if (nums[mid] > target) {
+				end = mid - 1
+			} else if (nums[mid] == target) {
+				result = mid
+				break
+			} else {
+				start = mid + 1
+			}
+		}
+		
+		println(mid)
+		println(start)
+		println(end)
+		
+		if (end == 0) {
+			result = mid
+		}
+		
+		if (start > 0) {
+			result = mid - 1
+		}
+		println(result)
+		return result
+	} // 解答失败: 测试用例:[1,3] 2 测试结果:0 期望结果:1 stdout:
+	
+	
+	class TreeNode(var `val`: Int) {
+		var left: TreeNode? = null
+		var right: TreeNode? = null
+	}
+	
+	fun inorderTraversal(root: TreeNode?): List<Int> {
+		val list = mutableListOf<Int>()
+		getVal(root,list)
+		return list
+	}
+	
+	fun getVal(root: TreeNode?, list: MutableList<Int>){
+		if (root == null) return
+		if (root.left != null) getVal(root,list)
+		list.add(root.`val`)
+		if (root.right != null) getVal(root,list)
+	}
+	
+	@Test
+	fun testisUnique() {
+		println(isUnique("eabdf"))
+	}
+	
+	fun isUnique(astr: String): Boolean {
+		val charArray = astr.toCharArray()
+		val array = IntArray(300)
+		var result = false
+		var temp: Int
+		for ( a in charArray) {
+			temp = a - 'a'
+			println(" temp = $temp")
+			if (++ array[temp] > 1) {
+				result = true
+				break
+			}
+		}
+		return result
+	}
+	
+	fun CheckPermutation(s1: String, s2: String): Boolean {
+		if (s1.length != s2.length) return false
+		var result = true
+		
+		val int1 = IntArray(s1.length)
+		val int2 = IntArray(s2.length)
+		for ((i, a) in s1.toCharArray().withIndex()) {
+			int1[i] = a - 'a'
+		}
+		for ((i, a) in s2.toCharArray().withIndex()) {
+			int2[i] = a - 'a'
+		}
+		int1.sort()
+		int2.sort()
+		for (i in int1) {
+			if (int1[i] != int2[i]) {
+				result = false
+				break
+			}
+		}
+		
+		return result
+	}
+	
+	fun pre(root: TreeNode?,list: MutableList<Int>) {
+	
+	}
+	
 }
