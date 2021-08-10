@@ -1,10 +1,15 @@
 package com.wangpeng.learning
 
+import io.mockk.InternalPlatformDsl.toArray
 import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 import kotlin.math.absoluteValue
 import kotlin.math.max
+import kotlin.math.sign
 
 @ExtendWith(MockKExtension::class)
 class Test {
@@ -232,8 +237,8 @@ class Test {
 	
 	@Test
 	fun testSearchInsert() {
-		val array = intArrayOf(1,3,5,6)
-		println(searchInsert(array,2))
+		val array = intArrayOf(1, 3, 5, 6)
+		println(searchInsert(array, 2))
 //		println(searchInsert(array,9))
 //		println(searchInsert(array,0))
 //		val array1 = intArrayOf(1,3)
@@ -284,15 +289,15 @@ class Test {
 	
 	fun inorderTraversal(root: TreeNode?): List<Int> {
 		val list = mutableListOf<Int>()
-		getVal(root,list)
+		getVal(root, list)
 		return list
 	}
 	
-	fun getVal(root: TreeNode?, list: MutableList<Int>){
+	fun getVal(root: TreeNode?, list: MutableList<Int>) {
 		if (root == null) return
-		if (root.left != null) getVal(root,list)
+		if (root.left != null) getVal(root, list)
 		list.add(root.`val`)
-		if (root.right != null) getVal(root,list)
+		if (root.right != null) getVal(root, list)
 	}
 	
 	@Test
@@ -305,7 +310,7 @@ class Test {
 		val array = IntArray(300)
 		var result = false
 		var temp: Int
-		for ( a in charArray) {
+		for (a in charArray) {
 			temp = a - 'a'
 			println(" temp = $temp")
 			if (++ array[temp] > 1) {
@@ -340,8 +345,214 @@ class Test {
 		return result
 	}
 	
-	fun pre(root: TreeNode?,list: MutableList<Int>) {
+	fun pre(root: TreeNode?, list: MutableList<Int>) {
 	
 	}
+	
+	@Test
+	fun findInt() {
+		val set = HashSet<Int>()
+		println('Z' - 'A' + 1)
+	}
+	
+	@Test
+	fun deque() {
+		val input: Deque<Int> = LinkedList()
+		val output: Deque<Int> = LinkedList()
+
+//		input.offer()
+	}
+	
+	fun removeElements(head: ListNode?, `val`: Int): ListNode? {
+		if (head == null) return head
+		var head2 = head
+		while (head2 != null && head2 !!.`val` == `val`) {
+			head2 = head2 !!.next
+		}
+		if (head2 == null) return null
+		var pre = head2
+		while (head2.next != null) {
+			if (head2.next?.`val` == `val`) {
+				pre?.next = head2.next?.next
+			} else {
+				pre = pre?.next
+			}
+		}
+		return head2
+	}
+	
+	class ListNode(var `val`: Int) {
+		var next: ListNode? = null
+	}
+	
+	fun reverseList(head: ListNode?): ListNode? {
+		if (head == null) return null
+		var pre: ListNode? = null
+		var cur: ListNode? = head
+		var temp: ListNode?
+		while (cur != null) {
+			temp = cur.next
+			cur.next = pre
+			pre = cur
+			cur = temp
+		}
+		return head
+	}
+	
+	fun maximumProduct(nums: IntArray): Int {
+		if (nums.size < 3) return 0
+		nums.sortDescending()
+		var i = 0
+		var j = nums.size - 1
+		var k: Int
+		var max = Int.MIN_VALUE
+		while (i < nums.size - 3) {
+			k = i + 1
+			while (j > i) {
+				val tempMax = nums[i] * nums[k] * nums[j]
+				max = Math.max(tempMax, max)
+				j --
+			}
+			i ++
+		}
+		return max
+	}
+	
+	fun merge(intervals: Array<IntArray>): Array<IntArray> {
+		if (intervals == null) return arrayOf()
+		val array = intervals
+		val result = mutableListOf<IntArray>()
+		array.sortBy { it[0] }
+		var start = array[0][0]
+		var i = 1
+		while (i < intervals.size) {
+			if (array[i][0] > array[i - 1][1]) {
+//				resultArray[newArraySize++] = intArrayOf(start,array[i-1][1])
+				result.add(intArrayOf(start, array[i - 1][1]))
+				start = array[i][0]
+			} else {
+				array[i][1] = Math.max(array[i][1], array[i - 1][1])
+			}
+			i ++
+		}
+		result.add(intArrayOf(start, array[array.size - 1][1]))
+		val resultArray: Array<IntArray> = result.toTypedArray()
+		return resultArray
+	}
+	
+	@Test
+	fun testnumDecodings() {
+	
+	}
+	
+	fun numDecodings(s: String): Int {
+		if (s.isNullOrEmpty()) return 0
+		if (s.length == 1) return 1
+		val array = s.toCharArray()
+		var i = array.size - 1
+		val resultList = mutableListOf<List<String>>()
+		var j: Int
+		var temp: String?
+		
+		// 解答失败: 测试用例:"226" 测试结果:2 期望结果:3 stdout:
+		while (i >= 0) {
+			temp = null
+			j = i - 1
+			
+			if (i == 0) {
+				resultList.add(listOf("${array[i]}"))
+				break
+			}
+			
+			if (array[i] == '0') {
+				temp = "${array[j]}${array[i]}"
+				resultList.add(listOf(temp))
+				i -= 2
+				continue
+			}
+			
+			if (array[j] == '0') {
+				temp = "${array[i]}"
+				resultList.add(listOf(temp))
+				i --
+				continue
+			}
+			temp = "${array[j]}${array[i]}"
+			if (temp.toInt() <= 26) {
+				resultList.add(listOf("${array[i]}", temp))
+				i -= 2
+				continue
+			}
+			resultList.add(listOf("${array[i]}"))
+			i --
+		}
+		var size = 1
+		for (a in resultList) {
+			size *= a.size
+		}
+		
+		return size
+	}
+	
+	fun wordPattern(pattern: String, s: String): Boolean {
+		if (pattern.isNullOrEmpty() || s.isNullOrEmpty()) return false
+		var array = pattern.toCharArray()
+		
+		var list = s.split(" ")
+		if (array.size != list.size) return false
+		var map = HashMap<String, String>()
+		var isPattern = true
+		var i = 0
+		while (i < array.size) {
+			if (map[array[i].toString()] == null) {
+				if (map.containsValue(list[i])) {
+					isPattern = false
+					break
+				}
+				map[array[i].toString()] = list[i]
+			} else {
+				if (map[array[i].toString()] != list[i]) {
+					isPattern = false
+					break
+				}
+			}
+			i++
+		}
+		
+		return isPattern
+	}
+	
+	@Test
+	fun testaddDigits() {
+		addDigits(38)
+	}
+	
+	fun addDigits(num: Int): Int {
+		if (num < 10) return num
+		var str = num.toString()
+		var sum = 0
+		var i = 0
+		while (i < str.length) {
+			sum += str[i] -'0'
+			i++
+		}
+		return addDigits(sum)
+	}
+	
+	fun moveZeroes(nums: IntArray): Unit {
+		var i = 0
+		var j = 0
+		while (i < nums.size) {
+			if (nums[i] != 0) {
+				nums[j++] = nums[i]
+			}
+			i++
+		}
+		while (j < nums.size) {
+			nums[j++] = 0
+		}
+	}
+	
+	
 	
 }
