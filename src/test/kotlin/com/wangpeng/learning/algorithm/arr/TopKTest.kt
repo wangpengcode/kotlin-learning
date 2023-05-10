@@ -13,7 +13,7 @@ class TopKTest {
 	/**
 	 * 找出数组中最大的3个数
 	 * **/
-	@Test
+//	@Test
 	fun topK() {
 		val arr = intArrayOf(1, 8, 999, 8, 20, 8909, 7, 22, 360)
 		println("Before sort")
